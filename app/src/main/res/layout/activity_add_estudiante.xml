@@ -1,40 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/edtNombre"
+        android:id="@+id/edtNombreCompleto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
-        android:inputType="text"
-        android:minHeight="48dp" />
-
-    <EditText
-        android:id="@+id/edtDUI"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="DUI"
-        android:inputType="text"
-        android:minHeight="48dp" />
-
-    <EditText
-        android:id="@+id/edtApellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Apellido"
-        android:inputType="text"
-        android:minHeight="48dp" />
-
-    <EditText
-        android:id="@+id/edtTelefono"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Teléfono"
-        android:inputType="phone"
+        android:hint="Nombre completo"
+        android:inputType="textPersonName"
         android:minHeight="48dp" />
 
     <EditText
@@ -51,20 +28,27 @@
         android:layout_height="wrap_content"
         android:hint="Dirección"
         android:inputType="textMultiLine"
-        android:minLines="3" />
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/edtTelefono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Teléfono"
+        android:inputType="phone"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/btnGuardar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Guardar"
-        android:onClick="guardar" />
+        android:onClick="guardar"/>
 
     <Button
         android:id="@+id/btnCancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancelar"
-        android:onClick="cancelar" />
-
+        android:onClick="cancelar"/>
 </LinearLayout>

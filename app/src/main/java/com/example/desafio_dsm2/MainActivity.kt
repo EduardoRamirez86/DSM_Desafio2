@@ -1,3 +1,4 @@
+// Archivo: app/src/main/java/com/example/desafio_dsm2/MainActivity.kt
 package com.example.desafio_dsm2
 
 import android.content.Intent
@@ -26,18 +27,14 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        // Verifica si el usuario ha iniciado sesión (no es nulo) y actualiza la UI
         val currentUser = auth.currentUser
         if (currentUser == null) {
-            // No hay usuario, ir a la pantalla de login
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
-            finish()
         } else {
-            // Usuario ya ha iniciado sesión, ir a la pantalla de la base de datos
-            val intent = Intent(this, PersonasActivity::class.java)
+            val intent = Intent(this, EstudiantesActivity::class.java)
             startActivity(intent)
-            finish()
         }
+        finish()
     }
 }

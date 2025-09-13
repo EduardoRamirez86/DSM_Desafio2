@@ -38,7 +38,7 @@ class Login : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, PersonasActivity::class.java)
+                        val intent = Intent(this, EstudiantesActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
@@ -60,7 +60,7 @@ class Login : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "Registro exitoso.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, PersonasActivity::class.java)
+                        val intent = Intent(this, EstudiantesActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
