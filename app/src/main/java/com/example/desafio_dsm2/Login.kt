@@ -30,43 +30,26 @@ class Login : AppCompatActivity() {
             val password = edtPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, complete todos los campos para iniciar sesión.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, EstudiantesActivity::class.java)
+                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(baseContext, "Error en el inicio de sesión. Verifique sus credenciales.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error de autenticación. Verifique sus credenciales.", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
 
+        // El botón de registro ahora solo navega a la nueva actividad de registro.
         btnRegister.setOnClickListener {
-            val email = edtEmail.text.toString()
-            val password = edtPassword.text.toString()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Registro exitoso.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, EstudiantesActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(baseContext, "Error en el registro. Verifique el formato del correo y la contraseña.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }

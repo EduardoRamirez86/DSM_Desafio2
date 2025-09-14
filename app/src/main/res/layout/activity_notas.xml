@@ -1,54 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="?attr/colorSurface"
+    tools:context=".NotasActivity">
 
     <TextView
+        android:id="@+id/label_estudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrar Nota"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:text="@string/select_student_label"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinnerEstudiante"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_estudiante" />
+
+    <TextView
+        android:id="@+id/label_grado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/select_grade_label"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerEstudiante" />
 
     <Spinner
         android:id="@+id/spinnerGrado"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_grado" />
+
+    <TextView
+        android:id="@+id/label_materia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/select_subject_label"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGrado" />
 
     <Spinner
         android:id="@+id/spinnerMateria"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_materia" />
 
-    <EditText
-        android:id="@+id/edtNotaFinal"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/label_nota"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nota Final (0-10)"
-        android:inputType="numberDecimal"
-        android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/final_note_label"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerMateria" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_nota"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_nota">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtNotaFinal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btnGuardarNota"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Guardar Nota"
-        android:onClick="guardarNota"/>
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="24dp"
+        android:text="@string/save_note_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_nota" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,74 +1,85 @@
-// Archivo: app/src/main/java/com/example/desafio_dsm2/EstudiantesActivity.kt
 package com.example.desafio_dsm2
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.desafio_dsm2.datos.Estudiante
+import com.example.desafio_dsm2.datos.EstudianteAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.example.desafio_dsm2.datos.Estudiante
+import com.google.firebase.ktx.Firebase
 
 class EstudiantesActivity : AppCompatActivity() {
 
-    private val consultaEstudiantes: Query = refEstudiantes.orderByChild("nombreCompleto")
-    private var estudiantes: MutableList<Estudiante>? = null
-    private var listaEstudiantes: ListView? = null
     private lateinit var auth: FirebaseAuth
+    private lateinit var refEstudiantes: DatabaseReference
+    private lateinit var refNotas: DatabaseReference // Added for notes
+    private lateinit var listaEstudiantes: ListView
+    private lateinit var fabAgregarEstudiante: FloatingActionButton
+    private lateinit var fabAgregarNota: FloatingActionButton
+
+    private var estudiantes: MutableList<Estudiante> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_estudiantes)
-        auth = FirebaseAuth.getInstance()
-        inicializar()
+
+        auth = Firebase.auth
+        refEstudiantes = FirebaseDatabase.getInstance().getReference("estudiantes")
+        refNotas = FirebaseDatabase.getInstance().getReference("notas") // Initialized refNotas
+
+        // 1. Inicializar las vistas
+        try {
+            listaEstudiantes = findViewById(R.id.ListaEstudiantes)
+            fabAgregarEstudiante = findViewById(R.id.fab_agregar_estudiante)
+            fabAgregarNota = findViewById(R.id.fab_agregar_nota)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error: Vistas no encontradas. Verifique su XML.", Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+            return
+        }
+
+        // 2. Configurar los listeners
+        configurarListeners()
+
+        // 3. Cargar la lista de estudiantes al iniciar
+        cargarEstudiantes()
     }
 
-    private fun inicializar() {
-        val fabAgregarEstudiante: FloatingActionButton = findViewById(R.id.fab_agregar_estudiante)
-        val fabAgregarNota: FloatingActionButton = findViewById(R.id.fab_agregar_nota)
-        listaEstudiantes = findViewById(R.id.ListaEstudiantes)
-
-        listaEstudiantes!!.setOnItemClickListener { _, _, i, _ ->
-            val intent = Intent(this, AddEstudianteActivity::class.java)
-            intent.putExtra("accion", "e") // Editar
-            val estudiante = estudiantes!![i]
-            intent.putExtra("estudiante", estudiante as java.io.Serializable)
-            startActivity(intent)
-        }
-
-        listaEstudiantes!!.setOnItemLongClickListener { _, _, i, _ ->
-            val estudiante = estudiantes!![i]
-            val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setTitle("Eliminar Estudiante")
-            alertDialogBuilder.setMessage("¿Estás seguro de que quieres eliminar a ${estudiante.nombreCompleto}?")
-            alertDialogBuilder.setPositiveButton("Sí") { _: DialogInterface, _: Int ->
-                if (estudiante.key != null) {
-                    refEstudiantes.child(estudiante.key!!).removeValue()
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Estudiante eliminado con éxito", Toast.LENGTH_SHORT).show()
+    private fun cargarEstudiantes() {
+        refEstudiantes.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                estudiantes.clear()
+                for (dato in dataSnapshot.children) {
+                    try {
+                        val estudiante: Estudiante? = dato.getValue(Estudiante::class.java)
+                        estudiante?.key = dato.key
+                        if (estudiante != null) {
+                            estudiantes.add(estudiante)
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error al eliminar estudiante", Toast.LENGTH_SHORT).show()
-                        }
+                    } catch (e: com.google.firebase.database.DatabaseException) {
+                        e.printStackTrace()
+                    }
                 }
+                val adapter = EstudianteAdapter(this@EstudiantesActivity, estudiantes)
+                listaEstudiantes.adapter = adapter
             }
-            alertDialogBuilder.setNegativeButton("No") { dialogInterface: DialogInterface, _: Int ->
-                dialogInterface.dismiss()
-            }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
-            true
-        }
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(this@EstudiantesActivity, "Error al cargar datos.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun configurarListeners() {
         fabAgregarEstudiante.setOnClickListener {
             val intent = Intent(this, AddEstudianteActivity::class.java)
-            intent.putExtra("accion", "a") // Agregar
             startActivity(intent)
         }
 
@@ -77,47 +88,50 @@ class EstudiantesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        estudiantes = ArrayList()
-
-        consultaEstudiantes.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                estudiantes!!.clear()
-                for (dato in dataSnapshot.children) {
-                    val estudiante: Estudiante? = dato.getValue(Estudiante::class.java)
-                    estudiante?.key = dato.key
-                    if (estudiante != null) {
-                        estudiantes!!.add(estudiante)
-                    }
-                }
-                val adapter = AdaptadorEstudiante(this@EstudiantesActivity, estudiantes as ArrayList<Estudiante>)
-                listaEstudiantes!!.adapter = adapter
+        listaEstudiantes.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, i, _ ->
+            val estudiante = estudiantes[i]
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Eliminar Estudiante")
+            builder.setMessage("¿Estás seguro de que quieres eliminar a ${estudiante.nombreCompleto} y todas sus notas asociadas?")
+            builder.setPositiveButton("Sí") { dialog, which ->
+                eliminarEstudiante(estudiante.key)
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                auth.signOut()
-                val intent = Intent(this, Login::class.java)
-                startActivity(intent)
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+            builder.setNegativeButton("No", null)
+            builder.show()
+            true
         }
     }
 
-    companion object {
-        private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-        val refEstudiantes: DatabaseReference = database.getReference("estudiantes")
-        val refNotas: DatabaseReference = database.getReference("notas")
+    // New method to handle the deletion
+    private fun eliminarEstudiante(estudianteKey: String?) {
+        if (estudianteKey == null) {
+            Toast.makeText(this, "Error: La clave del estudiante es nula.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 1. Eliminar todas las notas asociadas al estudiante
+        refNotas.orderByChild("estudianteKey").equalTo(estudianteKey)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (notaSnapshot in snapshot.children) {
+                            notaSnapshot.ref.removeValue()
+                        }
+                    }
+
+                    // 2. Después de eliminar las notas, eliminar el estudiante
+                    refEstudiantes.child(estudianteKey).removeValue()
+                        .addOnSuccessListener {
+                            Toast.makeText(this@EstudiantesActivity, "Estudiante y notas eliminadas con éxito.", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this@EstudiantesActivity, "Error al eliminar el estudiante.", Toast.LENGTH_SHORT).show()
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@EstudiantesActivity, "Error al eliminar notas asociadas.", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 }

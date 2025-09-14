@@ -1,96 +1,82 @@
-// Archivo: app/src/main/java/com/example/desafio_dsm2/AddEstudianteActivity.kt
 package com.example.desafio_dsm2
 
-import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import com.example.desafio_dsm2.datos.Estudiante
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.example.desafio_dsm2.datos.Estudiante
 
 class AddEstudianteActivity : AppCompatActivity() {
-    private var edtNombreCompleto: EditText? = null
-    private var edtEdad: EditText? = null
-    private var edtDireccion: EditText? = null
-    private var edtTelefono: EditText? = null
-    private var key: String = ""
-    private var accion: String = ""
-    private lateinit var database: DatabaseReference
+
+    // Se cambió a TextInputEditText para que coincida con el XML
+    private lateinit var etNombre: TextInputEditText
+    private lateinit var etEdad: TextInputEditText
+    private lateinit var etDireccion: TextInputEditText
+    private lateinit var etTelefono: TextInputEditText
+    private lateinit var btnGuardar: Button
+
+    private lateinit var database: FirebaseDatabase
+    private lateinit var refEstudiantes: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_estudiante)
-        inicializar()
-    }
 
-    private fun inicializar() {
-        database = FirebaseDatabase.getInstance().getReference("estudiantes")
-        edtNombreCompleto = findViewById(R.id.edtNombreCompleto)
-        edtEdad = findViewById(R.id.edtEdad)
-        edtDireccion = findViewById(R.id.edtDireccion)
-        edtTelefono = findViewById(R.id.edtTelefono)
+        // Inicializar las vistas con los IDs correctos del XML
+        etNombre = findViewById(R.id.edtNombreCompleto)
+        etEdad = findViewById(R.id.edtEdad)
+        etDireccion = findViewById(R.id.edtDireccion)
+        etTelefono = findViewById(R.id.edtTelefono)
+        btnGuardar = findViewById(R.id.btnGuardar)
 
-        val intent = intent
-        accion = intent.getStringExtra("accion").toString()
-        if (accion == "e") {
-            val estudiante = intent.getSerializableExtra("estudiante") as Estudiante
-            edtNombreCompleto?.setText(estudiante.nombreCompleto)
-            edtEdad?.setText(estudiante.edad.toString())
-            edtDireccion?.setText(estudiante.direccion)
-            edtTelefono?.setText(estudiante.telefono)
-            key = estudiante.key.toString()
+        // Inicializar la referencia a la base de datos
+        database = FirebaseDatabase.getInstance()
+        refEstudiantes = database.getReference("estudiantes")
+
+        // Configurar el listener para el botón de guardar
+        btnGuardar.setOnClickListener {
+            guardarEstudiante()
         }
     }
 
-    fun guardar(v: View?) {
-        val nombreCompleto = edtNombreCompleto?.text.toString()
-        val edadStr = edtEdad?.text.toString()
-        val direccion = edtDireccion?.text.toString()
-        val telefono = edtTelefono?.text.toString()
+    private fun guardarEstudiante() {
+        // 1. Obtener los valores de los campos de texto
+        val nombre = etNombre.text.toString().trim()
+        val edadStr = etEdad.text.toString().trim()
+        val direccion = etDireccion.text.toString().trim()
+        val telefono = etTelefono.text.toString().trim()
 
-        if (nombreCompleto.isEmpty() || edadStr.isEmpty() || direccion.isEmpty() || telefono.isEmpty()) {
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
+        // 2. Validar que los campos no estén vacíos
+        if (nombre.isEmpty() || edadStr.isEmpty() || direccion.isEmpty() || telefono.isEmpty()) {
+            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val edad = edadStr.toIntOrNull() ?: 0
-        val estudiante = Estudiante(nombreCompleto, edad, direccion, telefono)
+        try {
+            val edad = edadStr.toInt()
 
-        if (accion == "a") {
-            val newKey = database.push().key
-            if (newKey != null) {
-                database.child(newKey).setValue(estudiante)
+            // 3. Crear un objeto Estudiante
+            val estudiante = Estudiante(nombre, edad, direccion, telefono)
+
+            // 4. Guardar el objeto en la base de datos
+            val estudianteKey = refEstudiantes.push().key
+            if (estudianteKey != null) {
+                refEstudiantes.child(estudianteKey).setValue(estudiante)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Estudiante guardado con éxito", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Estudiante guardado con éxito.", Toast.LENGTH_SHORT).show()
+                        finish() // Cierra la actividad para volver a la lista
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Error al guardar estudiante", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error al guardar el estudiante: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
+            } else {
+                Toast.makeText(this, "No se pudo generar una clave para el estudiante.", Toast.LENGTH_SHORT).show()
             }
-        } else if (accion == "e") {
-            if (key.isNotEmpty()) {
-                val estudianteValues = mapOf(
-                    "nombreCompleto" to estudiante.nombreCompleto,
-                    "edad" to estudiante.edad,
-                    "direccion" to estudiante.direccion,
-                    "telefono" to estudiante.telefono
-                )
-                database.child(key).updateChildren(estudianteValues)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Estudiante actualizado con éxito", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Error al actualizar estudiante", Toast.LENGTH_SHORT).show()
-                    }
-            }
+        } catch (e: NumberFormatException) {
+            Toast.makeText(this, "La edad debe ser un número válido.", Toast.LENGTH_SHORT).show()
         }
-        finish()
-    }
-
-    fun cancelar(v: View?) {
-        finish()
     }
 }

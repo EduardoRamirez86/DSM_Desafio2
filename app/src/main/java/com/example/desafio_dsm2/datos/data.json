@@ -1,0 +1,24 @@
+{
+  "grados": {
+    "grado1": "1° Grado",
+    "grado2": "2° Grado",
+    "grado3": "3° Grado",
+    "grado4": "4° Grado",
+    "grado5": "5° Grado",
+    "grado6": "6° Grado",
+    "grado7": "7° Grado",
+    "grado8": "8° Grado",
+    "grado9": "9° Grado",
+    "grado10": "1° Bachillerato",
+    "grado11": "2° Bachillerato",
+    "grado12": "3° Bachillerato"
+  },
+  "materias": {
+    "materia1": "Matemáticas",
+    "materia2": "Lenguaje",
+    "materia3": "Ciencias",
+    "materia4": "Estudios Sociales",
+    "materia5": "Inglés",
+    "materia6": "Física"
+  }
+}
