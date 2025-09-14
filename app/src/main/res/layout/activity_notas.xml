@@ -34,10 +34,10 @@
         android:id="@+id/label_grado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
         android:text="@string/select_grade_label"
         android:textColor="?attr/colorOnSurface"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerEstudiante" />
 
@@ -56,10 +56,10 @@
         android:id="@+id/label_materia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
         android:text="@string/select_subject_label"
         android:textColor="?attr/colorOnSurface"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerGrado" />
 
@@ -78,9 +78,9 @@
         android:id="@+id/label_nota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
         android:text="@string/final_note_label"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
         android:textColor="?attr/colorOnSurface"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerMateria" />

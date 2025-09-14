@@ -30,17 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/agregar_estudiante" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_agregar_nota"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_note_add_24"
-        app:tint="?attr/colorOnPrimary"
-        app:backgroundTint="?attr/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/fab_agregar_estudiante"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/agregar_nota" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

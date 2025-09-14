@@ -19,7 +19,6 @@ class EstudiantesActivity : AppCompatActivity() {
     private lateinit var refEstudiantes: DatabaseReference
     private lateinit var listaEstudiantes: ListView
     private lateinit var fabAgregarEstudiante: FloatingActionButton
-    private lateinit var fabAgregarNota: FloatingActionButton
 
     private var estudiantes: MutableList<Estudiante> = mutableListOf()
 
@@ -33,7 +32,6 @@ class EstudiantesActivity : AppCompatActivity() {
         try {
             listaEstudiantes = findViewById(R.id.ListaEstudiantes)
             fabAgregarEstudiante = findViewById(R.id.fab_agregar_estudiante)
-            fabAgregarNota = findViewById(R.id.fab_agregar_nota)
         } catch (e: Exception) {
             Toast.makeText(this, "Error: Vistas no encontradas. Verifique su XML.", Toast.LENGTH_LONG).show()
             e.printStackTrace()
@@ -72,11 +70,6 @@ class EstudiantesActivity : AppCompatActivity() {
     private fun configurarListeners() {
         fabAgregarEstudiante.setOnClickListener {
             val intent = Intent(this, AddEstudianteActivity::class.java)
-            startActivity(intent)
-        }
-
-        fabAgregarNota.setOnClickListener {
-            val intent = Intent(this, NotasActivity::class.java)
             startActivity(intent)
         }
     }

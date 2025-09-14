@@ -14,6 +14,7 @@ import java.util.*
 
 class ListaNotasActivity : AppCompatActivity() {
 
+    // Mantén el tipo de variable como Spinner
     private lateinit var spinnerGrado: Spinner
     private lateinit var spinnerMateria: Spinner
     private lateinit var listaNotasView: ListView
@@ -36,6 +37,7 @@ class ListaNotasActivity : AppCompatActivity() {
         refGrados = database.getReference("grados")
         refMaterias = database.getReference("materias")
 
+        // Asegúrate de que los IDs correspondan con los del Spinner en el XML
         spinnerGrado = findViewById(R.id.spinnerGrado)
         spinnerMateria = findViewById(R.id.spinnerMateria)
         listaNotasView = findViewById(R.id.listaNotas)
@@ -94,6 +96,7 @@ class ListaNotasActivity : AppCompatActivity() {
             }
         })
 
+        // Usa el listener de selección del Spinner
         val onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val gradoSeleccionado = spinnerGrado.selectedItem?.toString() ?: ""
