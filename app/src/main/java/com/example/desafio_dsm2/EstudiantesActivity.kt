@@ -1,9 +1,7 @@
 package com.example.desafio_dsm2
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +17,6 @@ class EstudiantesActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var refEstudiantes: DatabaseReference
-    private lateinit var refNotas: DatabaseReference // Added for notes
     private lateinit var listaEstudiantes: ListView
     private lateinit var fabAgregarEstudiante: FloatingActionButton
     private lateinit var fabAgregarNota: FloatingActionButton
@@ -32,9 +29,7 @@ class EstudiantesActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         refEstudiantes = FirebaseDatabase.getInstance().getReference("estudiantes")
-        refNotas = FirebaseDatabase.getInstance().getReference("notas") // Initialized refNotas
 
-        // 1. Inicializar las vistas
         try {
             listaEstudiantes = findViewById(R.id.ListaEstudiantes)
             fabAgregarEstudiante = findViewById(R.id.fab_agregar_estudiante)
@@ -45,10 +40,7 @@ class EstudiantesActivity : AppCompatActivity() {
             return
         }
 
-        // 2. Configurar los listeners
         configurarListeners()
-
-        // 3. Cargar la lista de estudiantes al iniciar
         cargarEstudiantes()
     }
 
@@ -87,51 +79,5 @@ class EstudiantesActivity : AppCompatActivity() {
             val intent = Intent(this, NotasActivity::class.java)
             startActivity(intent)
         }
-
-        listaEstudiantes.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, i, _ ->
-            val estudiante = estudiantes[i]
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Eliminar Estudiante")
-            builder.setMessage("¿Estás seguro de que quieres eliminar a ${estudiante.nombreCompleto} y todas sus notas asociadas?")
-            builder.setPositiveButton("Sí") { dialog, which ->
-                eliminarEstudiante(estudiante.key)
-            }
-            builder.setNegativeButton("No", null)
-            builder.show()
-            true
-        }
-    }
-
-    // New method to handle the deletion
-    private fun eliminarEstudiante(estudianteKey: String?) {
-        if (estudianteKey == null) {
-            Toast.makeText(this, "Error: La clave del estudiante es nula.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // 1. Eliminar todas las notas asociadas al estudiante
-        refNotas.orderByChild("estudianteKey").equalTo(estudianteKey)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (notaSnapshot in snapshot.children) {
-                            notaSnapshot.ref.removeValue()
-                        }
-                    }
-
-                    // 2. Después de eliminar las notas, eliminar el estudiante
-                    refEstudiantes.child(estudianteKey).removeValue()
-                        .addOnSuccessListener {
-                            Toast.makeText(this@EstudiantesActivity, "Estudiante y notas eliminadas con éxito.", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this@EstudiantesActivity, "Error al eliminar el estudiante.", Toast.LENGTH_SHORT).show()
-                        }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@EstudiantesActivity, "Error al eliminar notas asociadas.", Toast.LENGTH_SHORT).show()
-                }
-            })
     }
 }
