@@ -14,7 +14,6 @@ import java.util.*
 
 class ListaNotasActivity : AppCompatActivity() {
 
-    // Mantén el tipo de variable como Spinner
     private lateinit var spinnerGrado: Spinner
     private lateinit var spinnerMateria: Spinner
     private lateinit var listaNotasView: ListView
@@ -37,7 +36,6 @@ class ListaNotasActivity : AppCompatActivity() {
         refGrados = database.getReference("grados")
         refMaterias = database.getReference("materias")
 
-        // Asegúrate de que los IDs correspondan con los del Spinner en el XML
         spinnerGrado = findViewById(R.id.spinnerGrado)
         spinnerMateria = findViewById(R.id.spinnerMateria)
         listaNotasView = findViewById(R.id.listaNotas)
@@ -96,7 +94,6 @@ class ListaNotasActivity : AppCompatActivity() {
             }
         })
 
-        // Usa el listener de selección del Spinner
         val onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val gradoSeleccionado = spinnerGrado.selectedItem?.toString() ?: ""
@@ -149,15 +146,12 @@ class ListaNotasActivity : AppCompatActivity() {
                 putExtra("estudiante_key", notaSeleccionada.estudianteKey)
                 putExtra("nota_key", notaSeleccionada.key)
                 putExtra("nota_valor", notaSeleccionada.notaFinal.toString())
-
-                // ¡AGREGA ESTAS DOS LÍNEAS!
                 putExtra("nota_grado", spinnerGrado.selectedItem.toString())
                 putExtra("nota_materia", spinnerMateria.selectedItem.toString())
             }
             startActivity(intent)
         }
 
-        // Listener para eliminar nota (clic largo)
         listaNotasView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _, _, i, _ ->
             val notaSeleccionada = listaEstudiantesNotas!![i]
             val builder = AlertDialog.Builder(this)

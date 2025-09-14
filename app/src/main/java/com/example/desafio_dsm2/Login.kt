@@ -46,7 +46,6 @@ class Login : AppCompatActivity() {
                 }
         }
 
-        // El botón de registro ahora solo navega a la nueva actividad de registro.
         btnRegister.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)

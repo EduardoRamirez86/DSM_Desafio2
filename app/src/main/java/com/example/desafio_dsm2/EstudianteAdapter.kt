@@ -42,7 +42,7 @@ class EstudianteAdapter(private val mContext: Context, private val listaEstudian
         tvDireccion?.text = "Dirección: ${estudianteActual.direccion}"
         tvTelefono?.text = "Teléfono: ${estudianteActual.telefono}"
 
-        // Configurar el listener del botón de eliminar dentro del adaptador
+
         btnEliminar?.setOnClickListener {
             val builder = AlertDialog.Builder(mContext)
             builder.setTitle("Eliminar Estudiante")
@@ -54,7 +54,7 @@ class EstudianteAdapter(private val mContext: Context, private val listaEstudian
             builder.show()
         }
 
-        // Configurar el listener de clic para la edición en el contenedor principal
+
         listItem?.setOnClickListener {
             val intent = Intent(mContext, EditEstudianteActivity::class.java)
             intent.putExtra("id", estudianteActual.key)

@@ -51,7 +51,6 @@ class EditEstudianteActivity : AppCompatActivity() {
             etTelefono.setText(telefono)
         }
 
-        // Configurar el listener para el botón de guardar
         btnGuardarCambios.setOnClickListener {
             guardarCambios()
         }

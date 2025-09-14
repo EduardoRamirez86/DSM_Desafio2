@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class AddEstudianteActivity : AppCompatActivity() {
 
-    // Se cambió a TextInputEditText para que coincida con el XML
+
     private lateinit var etNombre: TextInputEditText
     private lateinit var etEdad: TextInputEditText
     private lateinit var etDireccion: TextInputEditText

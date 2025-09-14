@@ -16,7 +16,6 @@ import java.util.*
 
 class NotasActivity : AppCompatActivity() {
 
-    // Mantén el tipo de variable como Spinner
     private lateinit var spinnerEstudiante: Spinner
     private lateinit var spinnerGrado: Spinner
     private lateinit var spinnerMateria: Spinner
@@ -72,7 +71,6 @@ class NotasActivity : AppCompatActivity() {
     }
 
     private fun inicializarVistas() {
-        // Asegúrate de que los IDs correspondan con los del Spinner en el XML
         spinnerEstudiante = findViewById(R.id.spinnerEstudiante)
         spinnerGrado = findViewById(R.id.spinnerGrado)
         spinnerMateria = findViewById(R.id.spinnerMateria)
